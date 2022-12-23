@@ -118,9 +118,19 @@ numbers = [12, 75, 150, 180, 145, 525, 50]
 A. 	import functools as ft
 	numbers = [12, 75, 150, 180, 145, 525, 50]
 	# print(sum(numbers))
-	sum_number = lambda x,y: x+y
-	final_output = ft.reduce(sum_number, numbers)
-	print(final_output)
+	even_sum = 0
+	even_num=[]
+	for i in numbers:
+	    if i%2==0:
+		even_sum+=i
+		even_num.append(i)
+	    else:
+		continue
+
+	print(even_sum)
+	#sum_number = lambda x,y: x+y
+	#final_output = ft.reduce(sum_number, even_num)
+	#print(final_output)
 
 Q24. Write a code to take 3 numbers as an input from the user and display the greatest no as output.
 A. l = []
