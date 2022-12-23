@@ -1,0 +1,155 @@
+## Assignment Part-1
+Q1. Why do we call Python as a general purpose and high-level programming language?
+A. We call Python as a general purpose and high level programming language because it is widely used and can be easily understandable by human.
+
+Q2. Why is Python called a dynamically typed language?
+A.  As like other languages like Java, c, c++ we have to declare the variables type in our program but in Python we don't have to declare the variable type that's why it is called dynamically type language.
+
+Q3. List some pros and cons of Python programming language?
+Pros:
+•	User friendly which is easy to write and read
+•	Having large community and various libraries which helps not to write the code from beginning
+•	Can we used for multipurpose like app development, web development, data analysis, IoT, ML etc
+Cons:
+•	It is slow compare to other languages because its code need to be complied from bytecode to machine readable by interpreter which runs on PVM (Python Virtual Machine)
+•	Due to its dynamically property where we are not defining the type of variable so it increases the chances for errors
+•	No multi threading and high memory consumption
+
+Q4. In what all domains can we use Python?
+A. Python can be used for data analysis, web development, app development, IoT, ML etc
+
+Q5. What are variable and how can we declare them?
+A. Python variable is a container which holds a particular value to a memory location. Since python is a dynamically type language we don't have to define the variables type.
+   Rules for variable declaration:
+•	Any variable must start with the alphabet or underscore
+•	There should not be a space and special characters in variable
+•	It should not be a same to any keyword defined in the language
+
+Q6. How can we take an input from the user in Python?
+A.    Str_input = input("Enter the string")
+      Int_input = int(input('Enter the value'))
+
+
+Q7. What is the default datatype of the value that has been taken as an input using input() function?
+A. String
+
+Q8. What is type casting?
+A. Type casting is converting one data type to the another data type
+
+Q9. Can we take more than one input from the user using single input() function? If yes, how? If no, why?
+A. Yes we can take more than one input from the user using single input function by using loop.
+     Let = []
+     for I in range(5):
+         Inp = input('Enter value')
+         Lst.append(Inp)
+
+Q10. What are keywords?
+A. Keywords are special reserved words in language having specific meaning and purposes and cannot be used as a variable or any other purpose.
+
+Q11. Can we use keywords as a variable? Support your answer with reason.
+A. No, we cannot use keyword as a variable because they are reserved and can be used for a specific purpose
+
+Q12. What is indentation? What's the use of indentaion in Python?
+A. Indentation in Python refers to the white spaces in the starting of the line. We can use space or tab for the indentation. In python we use indentation to group the block of code.
+
+Q13. How can we throw some output in Python?
+A. We can use of print statement to give output in python. 
+        print("I want to become the Data Engineer")
+
+Q14. What are operators in Python?
+A. Operators are used to perform some operations on the variables and values.
+Python divides the operators in the following groups:
+
+Arithmetic operators
+Assignment operators
+Comparison operators
+Logical operators
+Identity operators
+Membership operators
+Bitwise operators
+
+
+Q15. What is difference between / and // operators?
+A. / Division operator => if we do 13/2 it gives 6.5
+  // Floor division operator=> 13//2 it gives 6
+
+Q16. Write a code that gives following as an output.
+```
+iNeuroniNeuroniNeuroniNeuron
+```
+A.   str = 'iNeuron'
+     print(str*4)
+
+
+Q17. Write a code to take a number as an input from the user and check if the number is odd or even?
+A.      inp = int(input('Enter a number: '))
+
+	print('Even' if inp%2==0 else 'Odd')
+
+Q18. What are boolean operator?
+A. Boolean operator(And, Or, Not) return True or False when used in Python.
+
+Q19. What will the output of the following?
+```
+1 or 0
+
+0 and 0
+
+True and False and True
+
+1 or 0 or 0
+```
+A. 1, 0, False, 1
+
+Q20. What are conditional statements in Python?
+A. Conditional statements like if, elif, nestedif, else helps to decide the flow of code by checking the various conditions
+
+Q21. What is use of 'if', 'elif' and 'else' keywords?
+A. They use to decide the flow of programme based on given condtions
+
+Q22. Write a code to take the age of person as an input and if age >= 18 display "I can vote". If age is < 18 display "I can't vote".
+A. age = int(input("Enter the age: "))
+   print("I can vote" if age>=18 else "I can't vote")
+
+Q23. Write a code that displays the sum of all the even numbers from the given list.
+```
+numbers = [12, 75, 150, 180, 145, 525, 50]
+```
+A. 	import functools as ft
+	numbers = [12, 75, 150, 180, 145, 525, 50]
+	# print(sum(numbers))
+	sum_number = lambda x,y: x+y
+	final_output = ft.reduce(sum_number, numbers)
+	print(final_output)
+
+Q24. Write a code to take 3 numbers as an input from the user and display the greatest no as output.
+A. l = []
+   for i in range(3):
+       num = int(input("Enter a number: "))
+       l.append(num)
+
+   # print(max(l))   
+
+   l.sort()
+   print(l[-1])
+
+
+Q25. Write a program to display only those numbers from a list that satisfy the following conditions
+
+- The number must be divisible by five
+
+- If the number is greater than 150, then skip it and move to the next number
+
+- If the number is greater than 500, then stop the loop
+```
+numbers = [12, 75, 150, 180, 145, 525, 50]
+```
+A. 	numbers = [12, 75, 150, 180, 145, 525, 50]
+
+	for num in numbers:
+    	if num>500:
+        	break
+    	elif num>150:
+        	continue
+    	elif num%5==0:
+        	print(num)
