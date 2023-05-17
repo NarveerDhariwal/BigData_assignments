@@ -1,0 +1,1324 @@
+This is a real time dataset of the ineuron technical consultant team. You have to perform hive analysis on this given dataset.
+
+Download Dataset 1 - https://drive.google.com/file/d/1WrG-9qv6atP-W3P_-gYln1hHyFKRKMHP/view
+
+Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq6vTVXU/view
+
+Note: both files are csv files. 
+
+
+1. Create a schema based on the given dataset
+
+CREATE external TABLE agent_log(
+  sl_no INT,
+  agent STRING,
+  date1 STRING,
+  login_time STRING,
+  logout_time STRING,
+  duration STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LOCATION '/input_data/'
+TBLPROPERTIES ('skip.header.line.count'='1');
+
+CREATE external TABLE agent_perf(
+  sl_no INT,
+  date1 STRING,
+  agent_name STRING,
+  total_chats INT,
+  average_response_time STRING,
+  average_resolution_time STRING,
+  average_rating FLOAT,
+  total_feedback INT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LOCATION '/input_data1/'
+TBLPROPERTIES ('skip.header.line.count'='1');
+
+
+
+
+
+2. Dump the data inside the hdfs in the given schema location.
+
+abc@fa7a91e52fe1:~/workspace$ hdfs dfs -mkdir /input_data
+
+abc@fa7a91e52fe1:~/workspace$ hdfs dfs -put AgentLogingReport.csv /input_data/
+
+abc@fa7a91e52fe1:~/workspace$ hdfs dfs -mkdir /input_data1
+
+abc@fa7a91e52fe1:~/workspace$ hdfs dfs -put AgentPerformance.csv /input_data1/
+
+
+
+3. List of all agents' names. 
+
+hive> select distinct(agent) from agent_log;
+Query ID = abc_20230517112734_c0754c04-7457-4d40-8944-48790158df1b
+Total jobs = 1
+Total MapReduce CPU Time Spent: 4 seconds 990 msec
+OK
+Aditya Shinde
+Aditya_iot
+Amersh
+Ameya Jain
+Ankitjha
+Anurag Tiwari
+Aravind
+Ayushi Mishra
+Bharath
+Boktiar Ahmed Bappy
+Chaitra K Hiremath
+Deepranjan Gupta
+Dibyanshu
+Harikrishnan Shaji
+Hrisikesh Neogi
+Hyder Abbas
+Ineuron Intelligence
+Ishawant Kumar
+Jawala Prakash
+Jaydeep Dixit
+Khushboo Priya
+Madhulika G
+Mahesh Sarade
+Maitry
+Manjunatha A
+Mithun S
+Mukesh
+Muskan Garg
+Nandani Gupta
+Nishtha Jain
+Nitin M
+Prabir Kumar Satapathy
+Prateek _iot
+Prerna Singh
+Rishav Dash
+Saikumarreddy N
+Sanjeev Kumar
+Saurabh Shukla
+Shiva Srivastava
+Shivan K
+Shivananda Sonwane
+Shubham Sharma
+Sowmiya Sivakumar
+Sudhanshu Kumar
+Suraj S Bilgi
+Swati
+Tarun
+Wasim
+Zeeshan
+Time taken: 26.932 seconds, Fetched: 49 row(s)
+
+
+
+
+
+4. Find out agent average rating.
+
+hive> select agent_name, round(avg(average_rating),2) as avg_rating from agent_perf
+    > group by agent_name;
+
+Total MapReduce CPU Time Spent: 6 seconds 350 msec
+OK
+Abhishek        0.0
+Aditya  0.0
+Aditya Shinde   1.8
+Aditya_iot      2.35
+Amersh  0.0
+Ameya Jain      2.22
+Anirudh         0.64
+Ankit Sharma    0.0
+Ankitjha        0.27
+Anurag Tiwari   0.18
+Aravind         2.18
+Ashad Nasim     0.17
+Ashish  0.0
+Ayushi Mishra   3.48
+Bharath         2.98
+Boktiar Ahmed Bappy     3.57
+Chaitra K Hiremath      0.86
+Deepranjan Gupta        2.89
+Dibyanshu       0.0
+Harikrishnan Shaji      2.64
+Hitesh Choudhary        0.0
+Hrisikesh Neogi 3.14
+Hyder Abbas     0.0
+Ineuron Intelligence    0.0
+Ishawant Kumar  3.54
+Jawala Prakash  3.47
+Jayant Kumar    1.07
+Jaydeep Dixit   3.17
+Khushboo Priya  3.7
+Madhulika G     3.5
+Mahak   0.1
+Mahesh Sarade   2.4
+Maitry  2.93
+Maneesh         0.17
+Manjunatha A    3.59
+Mithun S        2.36
+Mukesh  0.31
+Mukesh Rao      0.26
+Muskan Garg     0.71
+Nandani Gupta   2.92
+Nishtha Jain    3.28
+Nitin M 0.0
+Prabir Kumar Satapathy  2.51
+Prateek _iot    2.44
+Prerna Singh    3.23
+Rishav Dash     1.43
+Rohan   0.0
+Saif Khan       0.0
+Saikumarreddy N 1.98
+Samprit         0.0
+Sandipan Saha   0.43
+Sanjeev Kumar   3.38
+Sanjeevan       0.0
+Saurabh Shukla  0.56
+Shiva Srivastava        0.94
+Shivan K        2.84
+Shivan_S        0.14
+Shivananda Sonwane      4.23
+Shubham Sharma  3.23
+Sowmiya Sivakumar       1.26
+Spuri   0.0
+Sudhanshu Kumar 0.33
+Suraj S Bilgi   0.31
+Swati   2.42
+Tarun   0.05
+Uday Mishra     0.0
+Vasanth P       0.0
+Vivek   0.5
+Wasim   2.4
+Zeeshan         2.29
+Time taken: 24.237 seconds, Fetched: 70 row(s)
+
+
+
+
+5. Total working days for each agents 
+
+hive> select agent, count(distinct(date1)) as total_working_days from agent_log 
+    > group by agent;
+
+Aditya Shinde   1
+Aditya_iot      8
+Amersh  2
+Ameya Jain      7
+Ankitjha        2
+Anurag Tiwari   10
+Aravind 7
+Ayushi Mishra   9
+Bharath 8
+Boktiar Ahmed Bappy     9
+Chaitra K Hiremath      7
+Deepranjan Gupta        10
+Dibyanshu       9
+Harikrishnan Shaji      9
+Hrisikesh Neogi 9
+Hyder Abbas     2
+Ineuron Intelligence    1
+Ishawant Kumar  11
+Jawala Prakash  9
+Jaydeep Dixit   7
+Khushboo Priya  8
+Madhulika G     8
+Mahesh Sarade   8
+Maitry  5
+Manjunatha A    7
+Mithun S        8
+Mukesh  2
+Muskan Garg     6
+Nandani Gupta   9
+Nishtha Jain    8
+Nitin M 1
+Prabir Kumar Satapathy  7
+Prateek _iot    11
+Prerna Singh    9
+Rishav Dash     7
+Saikumarreddy N 7
+Sanjeev Kumar   9
+Saurabh Shukla  4
+Shiva Srivastava        8
+Shivan K        8
+Shivananda Sonwane      10
+Shubham Sharma  11
+Sowmiya Sivakumar       8
+Sudhanshu Kumar 6
+Suraj S Bilgi   2
+Swati   4
+Tarun   1
+Wasim   9
+Zeeshan 9
+
+
+
+
+6. Total query that each agent have taken 
+
+hive> select agent_name, sum(total_chats) as total_chats from agent_perf
+    > group by agent_name;
+
+OK
+Abhishek        0
+Aditya  0
+Aditya Shinde   277
+Aditya_iot      231
+Amersh  0
+Ameya Jain      322
+Anirudh         81
+Ankit Sharma    0
+Ankitjha        5
+Anurag Tiwari   4
+Aravind         366
+Ashad Nasim     18
+Ashish  0
+Ayushi Mishra   514
+Bharath         369
+Boktiar Ahmed Bappy     452
+Chaitra K Hiremath      64
+Deepranjan Gupta        493
+Dibyanshu       1
+Harikrishnan Shaji      381
+Hitesh Choudhary        1
+Hrisikesh Neogi 578
+Hyder Abbas     0
+Ineuron Intelligence    0
+Ishawant Kumar  338
+Jawala Prakash  439
+Jayant Kumar    127
+Jaydeep Dixit   512
+Khushboo Priya  446
+Madhulika G     469
+Mahak   7
+Mahesh Sarade   364
+Maitry  542
+Maneesh         4
+Manjunatha A    413
+Mithun S        503
+Mukesh  19
+Mukesh Rao      5
+Muskan Garg     56
+Nandani Gupta   560
+Nishtha Jain    373
+Nitin M 0
+Prabir Kumar Satapathy  299
+Prateek _iot    190
+Prerna Singh    401
+Rishav Dash     409
+Rohan   0
+Saif Khan       0
+Saikumarreddy N 364
+Samprit         1
+Sandipan Saha   30
+Sanjeev Kumar   507
+Sanjeevan       0
+Saurabh Shukla  16
+Shiva Srivastava        53
+Shivan K        357
+Shivan_S        7
+Shivananda Sonwane      441
+Shubham Sharma  510
+Sowmiya Sivakumar       206
+Spuri   0
+Sudhanshu Kumar 2
+Suraj S Bilgi   28
+Swati   524
+Tarun   22
+Uday Mishra     0
+Vasanth P       0
+Vivek   44
+Wasim   433
+Zeeshan         542
+Time taken: 24.591 seconds, Fetched: 70 row(s)
+
+
+
+
+
+7. Total Feedback that each agent have received
+
+hive> select agent_name, sum(total_feedback) as total_feedbacks from agent_perf
+    > group by agent_name;
+
+Total MapReduce CPU Time Spent: 4 seconds 660 msec
+OK
+Abhishek        0
+Aditya  0
+Aditya Shinde   153
+Aditya_iot      131
+Amersh  0
+Ameya Jain      228
+Anirudh         39
+Ankit Sharma    0
+Ankitjha        3
+Anurag Tiwari   3
+Aravind         233
+Ashad Nasim     9
+Ashish  0
+Ayushi Mishra   329
+Bharath         247
+Boktiar Ahmed Bappy     311
+Chaitra K Hiremath      37
+Deepranjan Gupta        312
+Dibyanshu       0
+Harikrishnan Shaji      231
+Hitesh Choudhary        0
+Hrisikesh Neogi 367
+Hyder Abbas     0
+Ineuron Intelligence    0
+Ishawant Kumar  202
+Jawala Prakash  250
+Jayant Kumar    70
+Jaydeep Dixit   305
+Khushboo Priya  289
+Madhulika G     281
+Mahak   5
+Mahesh Sarade   216
+Maitry  347
+Maneesh         3
+Manjunatha A    254
+Mithun S        364
+Mukesh  17
+Mukesh Rao      5
+Muskan Garg     37
+Nandani Gupta   308
+Nishtha Jain    257
+Nitin M 0
+Prabir Kumar Satapathy  222
+Prateek _iot    107
+Prerna Singh    235
+Rishav Dash     264
+Rohan   0
+Saif Khan       0
+Saikumarreddy N 290
+Samprit         0
+Sandipan Saha   18
+Sanjeev Kumar   311
+Sanjeevan       0
+Saurabh Shukla  8
+Shiva Srivastava        46
+Shivan K        243
+Shivan_S        4
+Shivananda Sonwane      263
+Shubham Sharma  300
+Sowmiya Sivakumar       141
+Spuri   0
+Sudhanshu Kumar 2
+Suraj S Bilgi   15
+Swati   302
+Tarun   6
+Uday Mishra     0
+Vasanth P       0
+Vivek   20
+Wasim   284
+Zeeshan         335
+
+Time taken: 29.85 seconds, Fetched: 70 row(s)
+
+
+ 
+
+8. Agent name who have average rating between 3.5 to 4
+
+hive> select agent_name, round(avg(average_rating),2) as avg_rating from agent_perf
+    > group by agent_name
+    > having round(avg(average_rating),2) between 3.5 and 4;
+
+OK
+Boktiar Ahmed Bappy     3.57
+Ishawant Kumar  3.54
+Khushboo Priya  3.7
+Madhulika G     3.5
+Manjunatha A    3.59
+Time taken: 25.804 seconds, Fetched: 5 row(s)
+
+
+
+
+ 
+9. Agent name who have rating less than 3.5
+
+hive> select agent_name, round(avg(average_rating),2) as avg_rating from agent_perf
+    > group by agent_name 
+    > having round(avg(average_rating),2)<3.5;
+
+Total MapReduce CPU Time Spent: 6 seconds 210 msec
+OK
+Abhishek        0.0
+Aditya  0.0
+Aditya Shinde   1.8
+Aditya_iot      2.35
+Amersh  0.0
+Ameya Jain      2.22
+Anirudh         0.64
+Ankit Sharma    0.0
+Ankitjha        0.27
+Anurag Tiwari   0.18
+Aravind         2.18
+Ashad Nasim     0.17
+Ashish  0.0
+Ayushi Mishra   3.48
+Bharath         2.98
+Chaitra K Hiremath      0.86
+Deepranjan Gupta        2.89
+Dibyanshu       0.0
+Harikrishnan Shaji      2.64
+Hitesh Choudhary        0.0
+Hrisikesh Neogi 3.14
+Hyder Abbas     0.0
+Ineuron Intelligence    0.0
+Jawala Prakash  3.47
+Jayant Kumar    1.07
+Jaydeep Dixit   3.17
+Mahak   0.1
+Mahesh Sarade   2.4
+Maitry  2.93
+Maneesh         0.17
+Mithun S        2.36
+Mukesh  0.31
+Mukesh Rao      0.26
+Muskan Garg     0.71
+Nandani Gupta   2.92
+Nishtha Jain    3.28
+Nitin M 0.0
+Prabir Kumar Satapathy  2.51
+Prateek _iot    2.44
+Prerna Singh    3.23
+Rishav Dash     1.43
+Rohan   0.0
+Saif Khan       0.0
+Saikumarreddy N 1.98
+Samprit         0.0
+Sandipan Saha   0.43
+Sanjeev Kumar   3.38
+Sanjeevan       0.0
+Saurabh Shukla  0.56
+Shiva Srivastava        0.94
+Shivan K        2.84
+Shivan_S        0.14
+Shubham Sharma  3.23
+Sowmiya Sivakumar       1.26
+Spuri   0.0
+Sudhanshu Kumar 0.33
+Suraj S Bilgi   0.31
+Swati   2.42
+Tarun   0.05
+Uday Mishra     0.0
+Vasanth P       0.0
+Vivek   0.5
+Wasim   2.4
+Zeeshan         2.29
+Time taken: 23.423 seconds, Fetched: 64 row(s)
+
+
+
+ 
+10. Agent name who have rating more than 4.5 
+
+hive> select agent_name, round(avg(average_rating),2) as avg_rating from agent_perf
+    > group by agent_name
+    > having round(avg(average_rating),2) > 4.5;
+
+No result
+
+
+hive> select count(distinct(agent_name)) from agent_perf where average_rating >4.5;
+Total MapReduce CPU Time Spent: 23 seconds 420 msec
+OK
+47
+Time taken: 23.355 seconds, Fetched: 1 row(s)
+
+47 has got rating above 4.5 atleast once.
+
+
+
+
+11. How many feedback agents have received more than 4.5 average
+
+A   hive> select sum(total_feedback) from agent_perf where average_rating > 4.5;
+
+Total MapReduce CPU Time Spent: 11 seconds 690 msec
+OK
+3489
+Time taken: 29.933 seconds, Fetched: 1 row(s)
+
+hive> select agent_name, average_rating, sum(total_feedback) from agent_perf
+    > group by agent_name, average_rating
+    > having average_rating >4.5;
+
+Total MapReduce CPU Time Spent: 17 seconds 340 msec
+OK
+Aditya Shinde   4.53    15
+Aditya Shinde   4.57    7
+Aditya Shinde   4.67    9
+Aditya Shinde   4.78    9
+Aditya Shinde   4.89    9
+Aditya Shinde   4.93    15
+Aditya Shinde   5.0     9
+Aditya_iot      4.56    16
+Aditya_iot      4.6     15
+Aditya_iot      4.8     10
+Aditya_iot      5.0     2
+Ameya Jain      4.53    15
+Ameya Jain      4.55    11
+Ameya Jain      4.56    18
+Ameya Jain      4.64    44
+Ameya Jain      4.65    26
+Ameya Jain      4.8     20
+Ameya Jain      5.0     16
+Anirudh         5.0     2
+Ankitjha        5.0     1
+Aravind         4.53    17
+Aravind         4.54    24
+Aravind         4.63    27
+Aravind         4.65    17
+Aravind         4.67    30
+Aravind         4.77    13
+Aravind         4.84    19
+Aravind         4.87    15
+Aravind         4.93    15
+Aravind         5.0     1
+Ayushi Mishra   4.59    17
+Ayushi Mishra   4.61    18
+Ayushi Mishra   4.62    13
+Ayushi Mishra   4.7     10
+Ayushi Mishra   4.83    12
+Ayushi Mishra   5.0     5
+Bharath         4.54    13
+Bharath         4.58    12
+Bharath         4.67    27
+Bharath         4.69    16
+Bharath         4.7     10
+Bharath         4.71    21
+Bharath         4.73    15
+Bharath         4.79    33
+Bharath         4.8     15
+Bharath         4.85    13
+Bharath         4.86    7
+Bharath         4.88    17
+Bharath         4.89    18
+Bharath         5.0     14
+Boktiar Ahmed Bappy     4.6     10
+Boktiar Ahmed Bappy     4.75    4
+Boktiar Ahmed Bappy     4.83    6
+Boktiar Ahmed Bappy     4.88    25
+Boktiar Ahmed Bappy     5.0     7
+Chaitra K Hiremath      5.0     5
+Deepranjan Gupta        4.69    16
+Deepranjan Gupta        4.72    18
+Deepranjan Gupta        4.75    20
+Deepranjan Gupta        4.8     5
+Deepranjan Gupta        4.88    17
+Deepranjan Gupta        5.0     7
+Harikrishnan Shaji      4.57    7
+Harikrishnan Shaji      4.64    14
+Harikrishnan Shaji      4.7     10
+Harikrishnan Shaji      4.78    9
+Harikrishnan Shaji      4.81    16
+Harikrishnan Shaji      4.83    6
+Harikrishnan Shaji      4.89    18
+Hrisikesh Neogi 4.53    17
+Hrisikesh Neogi 4.56    9
+Hrisikesh Neogi 4.62    21
+Hrisikesh Neogi 4.64    28
+Hrisikesh Neogi 4.67    12
+Hrisikesh Neogi 4.8     20
+Hrisikesh Neogi 4.82    17
+Hrisikesh Neogi 4.85    20
+Hrisikesh Neogi 4.88    17
+Hrisikesh Neogi 4.91    22
+Ishawant Kumar  4.62    8
+Ishawant Kumar  4.67    27
+Ishawant Kumar  4.75    12
+Ishawant Kumar  4.88    8
+Ishawant Kumar  5.0     24
+Jawala Prakash  4.56    9
+Jawala Prakash  4.64    11
+Jawala Prakash  4.75    4
+Jawala Prakash  4.83    6
+Jawala Prakash  5.0     3
+Jayant Kumar    5.0     7
+Jaydeep Dixit   4.55    20
+Jaydeep Dixit   4.59    22
+Jaydeep Dixit   4.67    18
+Jaydeep Dixit   4.69    13
+Jaydeep Dixit   4.71    17
+Jaydeep Dixit   4.75    4
+Jaydeep Dixit   4.77    13
+Jaydeep Dixit   4.78    18
+Jaydeep Dixit   4.82    17
+Jaydeep Dixit   4.88    16
+Jaydeep Dixit   4.9     10
+Jaydeep Dixit   4.91    11
+Khushboo Priya  4.54    13
+Khushboo Priya  4.58    24
+Khushboo Priya  4.6     10
+Khushboo Priya  4.61    18
+Khushboo Priya  4.67    6
+Khushboo Priya  4.71    14
+Khushboo Priya  4.75    24
+Khushboo Priya  4.8     10
+Khushboo Priya  5.0     15
+Madhulika G     4.56    18
+Madhulika G     4.67    15
+Madhulika G     4.71    14
+Madhulika G     4.92    12
+Madhulika G     5.0     8
+Mahesh Sarade   4.53    17
+Mahesh Sarade   4.57    7
+Mahesh Sarade   4.67    15
+Mahesh Sarade   4.71    7
+Maitry  4.73    11
+Maitry  4.79    14
+Maitry  4.84    19
+Maitry  4.85    13
+Maitry  4.94    18
+Maitry  5.0     6
+Manjunatha A    4.54    13
+Manjunatha A    4.57    35
+Manjunatha A    4.64    11
+Manjunatha A    4.67    18
+Manjunatha A    4.75    4
+Manjunatha A    4.83    12
+Manjunatha A    4.86    7
+Manjunatha A    4.87    15
+Manjunatha A    5.0     17
+Mithun S        4.53    19
+Mithun S        4.67    21
+Mithun S        4.69    13
+Mithun S        4.8     40
+Mukesh  4.62    8
+Mukesh  4.67    9
+Mukesh Rao      5.0     1
+Muskan Garg     4.6     10
+Muskan Garg     5.0     4
+Nandani Gupta   4.53    15
+Nandani Gupta   4.62    13
+Nandani Gupta   4.64    14
+Nandani Gupta   4.67    9
+Nandani Gupta   4.69    13
+Nandani Gupta   4.75    12
+Nandani Gupta   4.8     15
+Nishtha Jain    5.0     18
+Prabir Kumar Satapathy  4.75    4
+Prabir Kumar Satapathy  4.78    18
+Prabir Kumar Satapathy  4.86    14
+Prabir Kumar Satapathy  4.9     10
+Prabir Kumar Satapathy  5.0     7
+Prateek _iot    4.56    9
+Prateek _iot    4.67    3
+Prateek _iot    4.83    6
+Prateek _iot    4.85    13
+Prateek _iot    5.0     23
+Prerna Singh    4.57    14
+Prerna Singh    4.62    26
+Prerna Singh    4.64    11
+Prerna Singh    4.67    15
+Prerna Singh    4.75    4
+Prerna Singh    5.0     12
+Rishav Dash     4.6     15
+Rishav Dash     4.71    7
+Rishav Dash     4.8     5
+Saikumarreddy N 4.57    23
+Saikumarreddy N 4.59    22
+Saikumarreddy N 4.67    24
+Saikumarreddy N 4.69    35
+Saikumarreddy N 4.71    24
+Saikumarreddy N 4.82    17
+Saikumarreddy N 4.85    27
+Saikumarreddy N 5.0     12
+Sandipan Saha   5.0     1
+Sanjeev Kumar   4.53    15
+Sanjeev Kumar   4.54    26
+Sanjeev Kumar   4.56    9
+Sanjeev Kumar   4.57    23
+Sanjeev Kumar   4.61    18
+Sanjeev Kumar   4.67    6
+Sanjeev Kumar   4.82    22
+Sanjeev Kumar   4.84    19
+Sanjeev Kumar   4.95    20
+Sanjeev Kumar   5.0     6
+Saurabh Shukla  5.0     3
+Shiva Srivastava        5.0     2
+Shivan K        4.52    21
+Shivan K        4.57    7
+Shivan K        4.72    25
+Shivan K        4.73    15
+Shivan K        4.76    17
+Shivan K        4.78    9
+Shivan K        4.79    24
+Shivan K        5.0     12
+Shivananda Sonwane      4.55    11
+Shivananda Sonwane      4.56    18
+Shivananda Sonwane      4.62    8
+Shivananda Sonwane      4.67    9
+Shivananda Sonwane      4.7     10
+Shivananda Sonwane      4.73    11
+Shivananda Sonwane      4.75    12
+Shivananda Sonwane      4.83    12
+Shivananda Sonwane      4.85    13
+Shivananda Sonwane      4.86    14
+Shivananda Sonwane      4.88    8
+Shivananda Sonwane      5.0     28
+Shubham Sharma  4.55    22
+Shubham Sharma  4.56    9
+Shubham Sharma  4.67    15
+Shubham Sharma  4.73    11
+Shubham Sharma  4.8     5
+Shubham Sharma  4.83    12
+Shubham Sharma  4.84    19
+Shubham Sharma  4.9     10
+Shubham Sharma  4.92    26
+Shubham Sharma  5.0     26
+Sowmiya Sivakumar       4.75    16
+Sudhanshu Kumar 5.0     2
+Suraj S Bilgi   5.0     4
+Swati   4.53    15
+Swati   4.56    18
+Swati   4.64    14
+Swati   4.67    12
+Swati   4.75    8
+Swati   4.78    36
+Vivek   5.0     3
+Wasim   4.53    17
+Wasim   4.56    16
+Wasim   4.6     25
+Wasim   4.71    14
+Wasim   4.78    9
+Wasim   4.81    16
+Wasim   4.88    24
+Wasim   4.89    19
+Wasim   4.94    16
+Zeeshan         4.69    13
+Zeeshan         4.73    15
+Zeeshan         4.85    20
+Time taken: 26.76 seconds, Fetched: 244 row(s)
+
+
+
+
+
+
+12. average weekly response time for each agent
+
+hive> select agent_name, weekofyear(FROM_UNIXTIME(UNIX_TIMESTAMP(date1, 'MM/dd/yyyy'), 'yyyy-MM-dd')) as week,
+    > avg(UNIX_TIMESTAMP(average_response_time, 'H:mm:ss')) from agent_perf
+    > group by agent_name, weekofyear(FROM_UNIXTIME(UNIX_TIMESTAMP(date1, 'MM/dd/yyyy'), 'yyyy-MM-dd'));
+Query ID = abc_20230517125324_3cfc992a-5b1c-4898-a4df-e8659adbd39e
+
+Total MapReduce CPU Time Spent: 14 seconds 460 msec
+OK
+Abhishek        26      0.0
+Abhishek        27      0.0
+Abhishek        28      0.0
+Abhishek        29      0.0
+Abhishek        30      0.0
+Aditya  26      0.0
+Aditya  27      0.0
+Aditya  28      0.0
+Aditya  29      0.0
+Aditya  30      0.0
+Aditya Shinde   26      55.333333333333336
+Aditya Shinde   27      47.285714285714285
+Aditya Shinde   28      56.42857142857143
+Aditya Shinde   29      0.0
+Aditya Shinde   30      0.0
+Aditya_iot      26      0.0
+Aditya_iot      27      20.142857142857142
+Aditya_iot      28      52.0
+Aditya_iot      29      30.142857142857142
+Aditya_iot      30      50.5
+Amersh  26      0.0
+Amersh  27      0.0
+Amersh  28      0.0
+Amersh  29      0.0
+Amersh  30      0.0
+Ameya Jain      26      0.0
+Ameya Jain      27      0.0
+Ameya Jain      28      32.57142857142857
+Ameya Jain      29      29.714285714285715
+Ameya Jain      30      33.0
+Anirudh         26      0.0
+Anirudh         27      77.42857142857143
+Anirudh         28      15.857142857142858
+Anirudh         29      0.0
+Anirudh         30      0.0
+Ankit Sharma    26      0.0
+Ankit Sharma    27      0.0
+Ankit Sharma    28      0.0
+Ankit Sharma    29      0.0
+Ankit Sharma    30      0.0
+Ankitjha        26      0.0
+Ankitjha        27      0.0
+Ankitjha        28      0.0
+Ankitjha        29      0.0
+Ankitjha        30      22.166666666666668
+Anurag Tiwari   26      0.0
+Anurag Tiwari   27      36.142857142857146
+Anurag Tiwari   28      0.0
+Anurag Tiwari   29      0.0
+Anurag Tiwari   30      0.0
+Aravind         26      0.0
+Aravind         27      21.0
+Aravind         28      34.142857142857146
+Aravind         29      36.42857142857143
+Aravind         30      0.0
+Ashad Nasim     26      0.0
+Ashad Nasim     27      165.57142857142858
+Ashad Nasim     28      0.0
+Ashad Nasim     29      0.0
+Ashad Nasim     30      0.0
+Ashish  26      0.0
+Ashish  27      0.0
+Ashish  28      0.0
+Ashish  29      0.0
+Ashish  30      0.0
+Ayushi Mishra   26      57.0
+Ayushi Mishra   27      50.142857142857146
+Ayushi Mishra   28      48.285714285714285
+Ayushi Mishra   29      85.28571428571429
+Ayushi Mishra   30      58.833333333333336
+Bharath         26      28.0
+Bharath         27      24.285714285714285
+Bharath         28      14.0
+Bharath         29      45.0
+Bharath         30      22.833333333333332
+Boktiar Ahmed Bappy     26      60.333333333333336
+Boktiar Ahmed Bappy     27      42.857142857142854
+Boktiar Ahmed Bappy     28      59.0
+Boktiar Ahmed Bappy     29      66.85714285714286
+Boktiar Ahmed Bappy     30      103.16666666666667
+Chaitra K Hiremath      26      0.0
+Chaitra K Hiremath      27      0.0
+Chaitra K Hiremath      28      0.0
+Chaitra K Hiremath      29      32.714285714285715
+Chaitra K Hiremath      30      37.5
+Deepranjan Gupta        26      44.666666666666664
+Deepranjan Gupta        27      59.42857142857143
+Deepranjan Gupta        28      44.0
+Deepranjan Gupta        29      46.285714285714285
+Deepranjan Gupta        30      69.0
+Dibyanshu       26      0.0
+Dibyanshu       27      5.428571428571429
+Dibyanshu       28      0.0
+Dibyanshu       29      0.0
+Dibyanshu       30      0.0
+Harikrishnan Shaji      26      0.0
+Harikrishnan Shaji      27      27.857142857142858
+Harikrishnan Shaji      28      39.42857142857143
+Harikrishnan Shaji      29      48.42857142857143
+Harikrishnan Shaji      30      34.833333333333336
+Hitesh Choudhary        26      0.0
+Hitesh Choudhary        27      0.0
+Hitesh Choudhary        28      0.0
+Hitesh Choudhary        29      0.0
+Hitesh Choudhary        30      0.0
+Hrisikesh Neogi 26      37.666666666666664
+Hrisikesh Neogi 27      46.142857142857146
+Hrisikesh Neogi 28      45.285714285714285
+Hrisikesh Neogi 29      58.0
+Hrisikesh Neogi 30      59.333333333333336
+Hyder Abbas     26      0.0
+Hyder Abbas     27      0.0
+Hyder Abbas     28      0.0
+Hyder Abbas     29      0.0
+Hyder Abbas     30      0.0
+Ineuron Intelligence    26      0.0
+Ineuron Intelligence    27      0.0
+Ineuron Intelligence    28      0.0
+Ineuron Intelligence    29      0.0
+Ineuron Intelligence    30      0.0
+Ishawant Kumar  26      0.0
+Ishawant Kumar  27      39.714285714285715
+Ishawant Kumar  28      65.28571428571429
+Ishawant Kumar  29      62.714285714285715
+Ishawant Kumar  30      55.0
+Jawala Prakash  26      55.666666666666664
+Jawala Prakash  27      110.14285714285714
+Jawala Prakash  28      116.28571428571429
+Jawala Prakash  29      73.85714285714286
+Jawala Prakash  30      93.0
+Jayant Kumar    26      63.0
+Jayant Kumar    27      39.285714285714285
+Jayant Kumar    28      12.714285714285714
+Jayant Kumar    29      0.0
+Jayant Kumar    30      0.0
+Jaydeep Dixit   26      39.666666666666664
+Jaydeep Dixit   27      51.42857142857143
+Jaydeep Dixit   28      46.857142857142854
+Jaydeep Dixit   29      43.285714285714285
+Jaydeep Dixit   30      37.0
+Khushboo Priya  26      80.0
+Khushboo Priya  27      70.71428571428571
+Khushboo Priya  28      58.42857142857143
+Khushboo Priya  29      51.142857142857146
+Khushboo Priya  30      56.166666666666664
+Madhulika G     26      94.0
+Madhulika G     27      60.285714285714285
+Madhulika G     28      81.28571428571429
+Madhulika G     29      49.57142857142857
+Madhulika G     30      62.166666666666664
+Mahak   26      0.0
+Mahak   27      0.0
+Mahak   28      0.0
+Mahak   29      0.0
+Mahak   30      0.0
+Mahesh Sarade   26      0.0
+Mahesh Sarade   27      38.57142857142857
+Mahesh Sarade   28      55.42857142857143
+Mahesh Sarade   29      59.0
+Mahesh Sarade   30      53.666666666666664
+Maitry  26      41.666666666666664
+Maitry  27      48.42857142857143
+Maitry  28      74.14285714285714
+Maitry  29      70.85714285714286
+Maitry  30      72.66666666666667
+Maneesh         26      0.0
+Maneesh         27      19.285714285714285
+Maneesh         28      0.0
+Maneesh         29      0.0
+Maneesh         30      0.0
+Manjunatha A    26      42.0
+Manjunatha A    27      42.285714285714285
+Manjunatha A    28      33.285714285714285
+Manjunatha A    29      32.57142857142857
+Manjunatha A    30      33.666666666666664
+Mithun S        26      0.0
+Mithun S        27      2.7142857142857144
+Mithun S        28      43.857142857142854
+Mithun S        29      44.142857142857146
+Mithun S        30      38.833333333333336
+Mukesh  26      0.0
+Mukesh  27      0.0
+Mukesh  28      0.0
+Mukesh  29      0.0
+Mukesh  30      16.666666666666668
+Mukesh Rao      26      0.0
+Mukesh Rao      27      56.285714285714285
+Mukesh Rao      28      0.0
+Mukesh Rao      29      0.0
+Mukesh Rao      30      0.0
+Muskan Garg     26      0.0
+Muskan Garg     27      0.0
+Muskan Garg     28      0.0
+Muskan Garg     29      0.0
+Muskan Garg     30      29.666666666666668
+Nandani Gupta   26      108.33333333333333
+Nandani Gupta   27      57.857142857142854
+Nandani Gupta   28      50.714285714285715
+Nandani Gupta   29      57.57142857142857
+Nandani Gupta   30      51.333333333333336
+Nishtha Jain    26      0.0
+Nishtha Jain    27      72.28571428571429
+Nishtha Jain    28      60.714285714285715
+Nishtha Jain    29      88.57142857142857
+Nishtha Jain    30      45.5
+Nitin M 26      0.0
+Nitin M 27      0.0
+Nitin M 28      0.0
+Nitin M 29      0.0
+Nitin M 30      0.0
+Prabir Kumar Satapathy  26      0.0
+Prabir Kumar Satapathy  27      60.857142857142854
+Prabir Kumar Satapathy  28      34.0
+Prabir Kumar Satapathy  29      39.857142857142854
+Prabir Kumar Satapathy  30      32.833333333333336
+Prateek _iot    26      0.0
+Prateek _iot    27      9.428571428571429
+Prateek _iot    28      21.857142857142858
+Prateek _iot    29      32.714285714285715
+Prateek _iot    30      37.833333333333336
+Prerna Singh    26      64.66666666666667
+Prerna Singh    27      49.285714285714285
+Prerna Singh    28      41.857142857142854
+Prerna Singh    29      43.42857142857143
+Prerna Singh    30      49.0
+Rishav Dash     26      45.0
+Rishav Dash     27      30.071428571428573
+Rishav Dash     28      23.857142857142858
+Rishav Dash     29      25.928571428571427
+Rishav Dash     30      35.916666666666664
+Rohan   26      0.0
+Rohan   27      0.0
+Rohan   28      0.0
+Rohan   29      0.0
+Rohan   30      0.0
+Saif Khan       26      0.0
+Saif Khan       27      0.0
+Saif Khan       28      0.0
+Saif Khan       29      0.0
+Saif Khan       30      0.0
+Saikumarreddy N 26      0.0
+Saikumarreddy N 27      0.0
+Saikumarreddy N 28      22.142857142857142
+Saikumarreddy N 29      51.0
+Saikumarreddy N 30      40.5
+Samprit         26      0.0
+Samprit         27      0.0
+Samprit         28      0.0
+Samprit         29      0.0
+Samprit         30      0.0
+Sandipan Saha   26      0.0
+Sandipan Saha   27      0.0
+Sandipan Saha   28      25.285714285714285
+Sandipan Saha   29      0.0
+Sandipan Saha   30      0.0
+Sanjeev Kumar   26      76.0
+Sanjeev Kumar   27      39.0
+Sanjeev Kumar   28      70.14285714285714
+Sanjeev Kumar   29      41.142857142857146
+Sanjeev Kumar   30      42.666666666666664
+Sanjeevan       26      0.0
+Sanjeevan       27      0.0
+Sanjeevan       28      0.0
+Sanjeevan       29      0.0
+Sanjeevan       30      0.0
+Saurabh Shukla  26      7.0
+Saurabh Shukla  27      10.0
+Saurabh Shukla  28      2.0
+Saurabh Shukla  29      0.0
+Saurabh Shukla  30      0.0
+Shiva Srivastava        26      0.0
+Shiva Srivastava        27      0.0
+Shiva Srivastava        28      0.0
+Shiva Srivastava        29      23.857142857142858
+Shiva Srivastava        30      22.166666666666668
+Shivan K        26      56.0
+Shivan K        27      52.857142857142854
+Shivan K        28      29.0
+Shivan K        29      67.28571428571429
+Shivan K        30      37.5
+Shivan_S        26      0.0
+Shivan_S        27      10.428571428571429
+Shivan_S        28      0.0
+Shivan_S        29      0.0
+Shivan_S        30      0.0
+Shivananda Sonwane      26      77.0
+Shivananda Sonwane      27      52.57142857142857
+Shivananda Sonwane      28      49.142857142857146
+Shivananda Sonwane      29      59.57142857142857
+Shivananda Sonwane      30      53.333333333333336
+Shubham Sharma  26      54.333333333333336
+Shubham Sharma  27      41.57142857142857
+Shubham Sharma  28      36.857142857142854
+Shubham Sharma  29      51.142857142857146
+Shubham Sharma  30      63.333333333333336
+Sowmiya Sivakumar       26      0.0
+Sowmiya Sivakumar       27      0.0
+Sowmiya Sivakumar       28      0.0
+Sowmiya Sivakumar       29      60.42857142857143
+Sowmiya Sivakumar       30      60.333333333333336
+Spuri   26      0.0
+Spuri   27      0.0
+Spuri   28      0.0
+Spuri   29      0.0
+Spuri   30      0.0
+Sudhanshu Kumar 26      0.0
+Sudhanshu Kumar 27      6.857142857142857
+Sudhanshu Kumar 28      10.285714285714286
+Sudhanshu Kumar 29      0.0
+Sudhanshu Kumar 30      0.0
+Suraj S Bilgi   26      0.0
+Suraj S Bilgi   27      0.0
+Suraj S Bilgi   28      0.0
+Suraj S Bilgi   29      0.0
+Suraj S Bilgi   30      30.333333333333332
+Swati   26      107.0
+Swati   27      69.57142857142857
+Swati   28      77.14285714285714
+Swati   29      30.285714285714285
+Swati   30      29.0
+Tarun   26      0.0
+Tarun   27      0.0
+Tarun   28      0.0
+Tarun   29      0.0
+Tarun   30      0.0
+Uday Mishra     26      0.0
+Uday Mishra     27      0.0
+Uday Mishra     28      0.0
+Uday Mishra     29      0.0
+Uday Mishra     30      0.0
+Vasanth P       26      0.0
+Vasanth P       27      0.0
+Vasanth P       28      0.0
+Vasanth P       29      0.0
+Vasanth P       30      0.0
+Vivek   26      0.0
+Vivek   27      15.285714285714286
+Vivek   28      43.42857142857143
+Vivek   29      0.0
+Vivek   30      0.0
+Wasim   26      0.0
+Wasim   27      8.0
+Wasim   28      29.857142857142858
+Wasim   29      46.142857142857146
+Wasim   30      50.5
+Zeeshan         26      0.0
+Zeeshan         27      23.571428571428573
+Zeeshan         28      123.42857142857143
+Zeeshan         29      62.857142857142854
+Zeeshan         30      63.833333333333336
+Time taken: 29.695 seconds, Fetched: 350 row(s)
+
+ 
+13. average weekly resolution time for each agents 
+
+hive> select agent_name, weekofyear(FROM_UNIXTIME(UNIX_TIMESTAMP(date1, 'MM/dd/yyyy'), 'yyyy-MM-dd')) as week,
+    > round(avg(UNIX_TIMESTAMP(average_resolution_time, 'H:mm:ss')),2) from agent_perf
+    > group by agent_name, weekofyear(FROM_UNIXTIME(UNIX_TIMESTAMP(date1, 'MM/dd/yyyy'), 'yyyy-MM-dd'));
+
+
+
+
+14. Find the number of chat on which they have received a feedback 
+
+hive> select count(total_chats) from agent_perf
+    > where total_feedback>0;
+
+
+Total MapReduce CPU Time Spent: 13 seconds 240 msec
+OK
+731
+Time taken: 25.706 seconds, Fetched: 1 row(s)
+
+
+
+
+15. Total contribution hour for each and every agents weekly basis
+
+hive> select agent, weekofyear(FROM_UNIXTIME(UNIX_TIMESTAMP(date1, 'dd-MMM-yy'), 'yyyy-MM-dd')) as week,
+    > round(sum(UNIX_TIMESTAMP(duration, 'H:mm:ss'))/(60*60),2) from agent_log
+    > group by agent, weekofyear(FROM_UNIXTIME(UNIX_TIMESTAMP(date1, 'dd-MMM-yy'), 'yyyy-MM-dd'));
+
+
+OK
+Aditya Shinde   30      0.04
+Aditya_iot      29      6.1
+Aditya_iot      30      9.64
+Amersh  30      3.06
+Ameya Jain      29      24.08
+Ameya Jain      30      17.99
+Ankitjha        30      2.27
+Anurag Tiwari   29      0.26
+Anurag Tiwari   30      2.51
+Aravind 29      24.24
+Aravind 30      0.06
+Ayushi Mishra   29      17.79
+Ayushi Mishra   30      20.33
+Bharath 29      24.07
+Bharath 30      24.01
+Boktiar Ahmed Bappy     29      17.75
+Boktiar Ahmed Bappy     30      22.52
+Chaitra K Hiremath      29      2.23
+Chaitra K Hiremath      30      32.09
+Deepranjan Gupta        29      49.0
+Deepranjan Gupta        30      57.28
+Dibyanshu       29      27.74
+Dibyanshu       30      24.85
+Harikrishnan Shaji      29      21.44
+Harikrishnan Shaji      30      32.28
+Hrisikesh Neogi 29      26.89
+Hrisikesh Neogi 30      30.68
+Hyder Abbas     29      0.34
+Hyder Abbas     30      0.05
+Ineuron Intelligence    29      1.45
+Ishawant Kumar  29      25.72
+Ishawant Kumar  30      26.06
+Jawala Prakash  29      24.34
+Jawala Prakash  30      22.06
+Jaydeep Dixit   29      41.91
+Jaydeep Dixit   30      17.93
+Khushboo Priya  29      21.72
+Khushboo Priya  30      21.84
+Madhulika G     29      25.85
+Madhulika G     30      20.21
+Mahesh Sarade   29      25.48
+Mahesh Sarade   30      17.44
+Maitry  29      24.66
+Maitry  30      6.29
+Manjunatha A    29      18.35
+Manjunatha A    30      22.92
+Mithun S        29      17.38
+Mithun S        30      27.79
+Mukesh  30      8.91
+Muskan Garg     29      3.32
+Muskan Garg     30      14.02
+Nandani Gupta   29      17.33
+Nandani Gupta   30      22.84
+Nishtha Jain    29      22.12
+Nishtha Jain    30      21.74
+Nitin M 29      0.8
+Prabir Kumar Satapathy  29      17.52
+Prabir Kumar Satapathy  30      15.85
+Prateek _iot    29      7.27
+Prateek _iot    30      11.15
+Prerna Singh    29      18.52
+Prerna Singh    30      27.2
+Rishav Dash     29      18.89
+Rishav Dash     30      22.88
+Saikumarreddy N 29      24.98
+Saikumarreddy N 30      18.16
+Sanjeev Kumar   29      19.36
+Sanjeev Kumar   30      25.33
+Saurabh Shukla  29      16.66
+Shiva Srivastava        29      1.91
+Shiva Srivastava        30      13.09
+Shivan K        29      16.71
+Shivan K        30      19.39
+Shivananda Sonwane      29      20.83
+Shivananda Sonwane      30      28.45
+Shubham Sharma  29      30.51
+Shubham Sharma  30      23.29
+Sowmiya Sivakumar       29      17.07
+Sowmiya Sivakumar       30      27.69
+Sudhanshu Kumar 29      24.45
+Sudhanshu Kumar 30      21.78
+Suraj S Bilgi   30      12.56
+Swati   29      18.86
+Swati   30      6.14
+Tarun   26      514.14
+Wasim   29      19.63
+Wasim   30      28.55
+Zeeshan 29      24.43
+Zeeshan 30      24.66
+Time taken: 31.124 seconds, Fetched: 89 row(s)
+
+
+
+
+ 
+16. Perform inner join, left join and right join based on the agent column and after joining the table export that data into your local system.
+
+hive> insert overwrite local directory '/config/workspace/'
+    > row format delimited
+    > fields terminated by ','
+    > stored as textfile
+    > select * from agent_log t1 inner/left/right join agent_perf t2
+    > on t1.agent = t2.agent_name;
+
+
+
+
+
+
+17. Perform partitioning on top of the agent column and then on top of that perform bucketing for each partitioning.
+
+
+CREATE TABLE agent_data_pb (
+  sl_no INT,
+  date1 STRING,
+  total_chats INT,
+  average_response_time STRING,
+  average_resolution_time STRING,
+  average_rating FLOAT,
+  total_feedback INT
+)
+PARTITIONED BY (agent_name STRING)
+CLUSTERED BY (sl_no) INTO 4 BUCKETS;
+
+hive> insert into table agent_data_pb PARTITION(agent_name)
+    > select sl_no, date1, total_chats, average_response_time, average_resolution_time, average_rating, total_feedback, agent_name
+    > from agent_perf;
+
