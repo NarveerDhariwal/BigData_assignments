@@ -4,10 +4,15 @@ This project focuses on building a real-time data pipeline using Confluent Kafka
 **Project Overview**
 
 Utilized Confluent Kafka and Python to implement a real-time data pipeline for streaming COVID-19 dataset.
+
 Loaded the data into MongoDB using a Kafka consumer for efficient storage and retrieval.
+
 Conducted comprehensive data analysis using PySpark, Spark SQL, and Spark UDFs.
+
 Performed ETL operations such as data cleansing, filtering, sorting, and aggregation.
+
 Developed custom Spark UDFs to enhance data manipulation and categorization.
+
 Leveraged MongoDB as a scalable database solution for seamless data storage and retrieval.
 
 **Project Structure**
