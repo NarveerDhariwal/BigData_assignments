@@ -1,6 +1,6 @@
 **Data Extraction, Transformation, and Storage Pipeline**
 
-This project focuses on building an efficient data pipeline for extracting, transforming, and storing data using Python, Kafka messaging, MySQL, and Cassandra. The pipeline includes data extraction from Python-generated sources, necessary transformations using Python scripting, storage in MySQL for efficient retrieval, and loading transformed data into Cassandra for further analysis and processing capabilities.
+This project focuses on building an efficient data pipeline for extracting, transforming, and storing data using Python, Kafka messaging, PostgreSQL, and Cassandra. The pipeline includes data generation and transformations using Python scripting, storage in PostgreSQL for efficient retrieval, using Confluent Kafka for to extract data from PostgreSQL and loading transformed data into Cassandra for further analysis and processing capabilities.
 
 **Project Overview**
 
@@ -46,6 +46,7 @@ Implement desired ETL operations and transformations in kafka_project_consumer.p
 **Dependencies**
 
 Kafka Confluent: (https://www.confluent.io/lp/confluent-kafka/)
+PostgresSQL download: https://www.postgresql.org/
 Cassandra cloud version by Datastax: [https://www.datastax.com/]
 
 **Contributions**
