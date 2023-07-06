@@ -1,0 +1,38 @@
+# 1. Write an SQL query to retrieve the names and email addresses of all employees from a table named "Employees".
+select name, email from Employees;
+
+# 2. Write an SQL query to filter records from a table named "Customers" where the "City" column is 'New York'.
+select * from customer where city = 'New York';
+
+# 3. Write an SQL query to sort records in descending order based on the "DateOfBirth" column in a table named "Users".
+select * from Users order by DateOfBirth desc;
+
+# 4. Write an SQL query to sort records in ascending order based on the "RegistrationDate" column in a table named "Users".
+select * from users order by RegistrationDate;
+
+# 5. Write an SQL query to find the employee with the highest salary from a table named "Employees" and display their name, position, and salary.
+select name, position, salary from Employees where salary = (select max(salary) from payment)
+
+# 6. Write an SQL query to retrieve records from a table named "Customers" where the "Phone" column matches the pattern '+1-XXX-XXX-XXXX'.
+select * from Customers where phone like '+1-___-___-____';
+
+# 7. Write an SQL query to retrieve the top 5 customers with the highest total purchase amount from a table named "Orders" and display their names and total purchase amounts.
+# Use group by on names and find total amount spent by each person. Ordering it with total purchased amount in descending order and limiting only top 5 rows
+select name, sum(purchase_amount) as total_purchase from orders
+group by name 
+order by total_purchase desc 
+limit 5
+
+# 8. Write an SQL query to calculate the percentage of sales for each product category in a table named "Sales" and display the category name, total sales amount, and the percentage of total sales.
+# using group by to find the total_sale for each category, dividing total_sale_per_category with total sales for all product and calulating percentage
+select category_name, 
+sum(amount) as total_sale_amount, 
+sum(amount)/(select sum(amount) from payment) * 100 as percentage_of_total_sales from payment 
+group by category_name
+
+
+# 9. Write an SQL query to find the customers who have made the highest total purchases across all years from a table named "Orders" and display their names, email addresses, and the total purchase amount.
+#using group by function with max function to find highest money spent and then finding out detail of that customer.
+select name, email, sum(amount_spent) as total_purchase from orders 
+group by name, email 
+having total_purchase = (select max(money_spent) from (select name, sum(amount_spent) as money_spent from orders group by name) as tmp);
